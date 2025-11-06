@@ -16,8 +16,7 @@ public class AvisService {
 
     @Transactional
     public Avis create(AvisRequest req) {
-        // Ici on pourrait appeler UserClient/ArticleClient si les URLs existent
-        // sinon on accepte pour l’instant (mode “stub”).
+
         Avis entity = AvisMapper.toEntity(req);
         return repo.save(entity);
     }
