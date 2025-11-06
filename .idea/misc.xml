@@ -5,6 +5,8 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/avis/pom.xml" />
+        <option value="$PROJECT_DIR$/getway/pom.xml" />
+        <option value="$PROJECT_DIR$/DiscoveryServer/DiscoveryServer/pom.xml" />
       </list>
     </option>
   </component>
