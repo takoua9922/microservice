@@ -15,7 +15,7 @@ Kafka: Facilitates asynchronous communication for events like order notification
 Web Frontend: An Angular-based web application responsive user interface.
 Security Layer: Keycloak manages centralized authentication, ensuring secure access to services.
 Press enter or click to view image in full size
-<img width="682" height="482" alt="image" src="https://github.com/user-attachments/assets/8e5b3273-9d8f-47dc-8852-8458b2d72ac1" />
+<img width="692" height="481" alt="image" src="https://github.com/user-attachments/assets/6caea4ef-6166-4367-8462-6cd1b29a1e0f" />
 
 
 🛠️ Technology Stack
@@ -33,4 +33,5 @@ Containerization: Docker for creating isolated environments.
 Monitoring: Tools like Prometheus and Grafana for tracking application performance.
 
 Security: Keycloak with JWT for centralized and robust API protection.
+
 
