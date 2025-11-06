@@ -16,12 +16,21 @@ Web Frontend: An Angular-based web application responsive user interface.
 Security Layer: Keycloak manages centralized authentication, ensuring secure access to services.
 Press enter or click to view image in full size
 <img width="682" height="482" alt="image" src="https://github.com/user-attachments/assets/8e5b3273-9d8f-47dc-8852-8458b2d72ac1" />
+
+
 🛠️ Technology Stack
+
 This project leverages modern tools and frameworks to ensure scalability and maintainability:
 
 Backend: Spring Boot for developing RESTful microservices.
+
 Message Broker: Kafka for asynchronous communication.
+
 Database: Mongo DB and MySQL for persistent storage.
+
 Containerization: Docker for creating isolated environments.
+
 Monitoring: Tools like Prometheus and Grafana for tracking application performance.
+
 Security: Keycloak with JWT for centralized and robust API protection.
+
