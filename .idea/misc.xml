@@ -7,6 +7,7 @@
         <option value="$PROJECT_DIR$/avis/pom.xml" />
         <option value="$PROJECT_DIR$/getway/pom.xml" />
         <option value="$PROJECT_DIR$/DiscoveryServer/DiscoveryServer/pom.xml" />
+        <option value="$PROJECT_DIR$/ConfigServer/pom.xml" />
       </list>
     </option>
   </component>
