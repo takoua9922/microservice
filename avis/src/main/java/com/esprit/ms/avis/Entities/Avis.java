@@ -1,36 +1,21 @@
 package com.esprit.ms.avis.Entities;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.time.Instant;
 
-@Entity
-@Table(name="avis")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Document(collection = "avis")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Avis {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-    private Long userId;
-
-    @Column(nullable = false)
-    private Long articleId;
-
-    @Column(nullable = false)
-    private Integer rating; // 1..5
-
-    @Column(length = 1000)
+    @Id private String id;
+    @Indexed private String userId;
+    @Indexed private String productId; // << not articleId
+    private Integer rating;
     private String comment;
-
-    @Column(nullable = false, updatable = false)
-    private Instant createdAt;
-
-    @PrePersist
-    void prePersist() { if (createdAt == null) createdAt = Instant.now(); }
+    @CreatedDate private Instant createdAt;
 }
 
