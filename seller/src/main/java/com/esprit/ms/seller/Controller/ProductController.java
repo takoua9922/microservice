@@ -62,5 +62,22 @@ public class ProductController {
     public Boolean exists(@PathVariable String id) {
         return repo.existsById(id);
     }
+
+
+    @GetMapping
+    public Page<Product> listAll(@RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "20") int size,
+                                 @RequestParam(defaultValue = "updatedAt,desc") String sort) {
+        String[] parts = sort.split(",");
+        Sort s = (parts.length == 2 && "desc".equalsIgnoreCase(parts[1]))
+                ? Sort.by(Sort.Order.desc(parts[0]))
+                : Sort.by(Sort.Order.asc(parts[0]));
+        Pageable pageable = PageRequest.of(page, size, s);
+        return service.listAll(pageable);
+    }
+    @GetMapping("/details/{id}")
+    public Product getDetails(@PathVariable String id) {
+        return service.getById(id);
+    }
     }
 

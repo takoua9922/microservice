@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/avis")
 @RequiredArgsConstructor
+
 public class AvisController {
     private final AvisService service;
 

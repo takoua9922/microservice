@@ -4,8 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "user-service", url = "${ext.user.base-url:}")
+@FeignClient(name = "user-service", url = "${ext.product.base-url:http://localhost:9080}")
 public interface UserClient {
-    @GetMapping("/users/{id}/exists")
-    Boolean userExists(@PathVariable("id") String id);
+    @GetMapping("/api/v1/customers/exists/{customer-id}")
+    Boolean userExists(@PathVariable("customer-id") String id);
 }

@@ -119,4 +119,10 @@ public class ProductService {
     public boolean existsById(String id) {
         return repo.existsById(id);
     }
+    public Page<Product> listAll(Pageable pageable) {
+        return repo.findAll(pageable);}
+    public Product getById(String id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+    }
 }

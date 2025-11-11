@@ -1,0 +1,21 @@
+[
+  { "_id": "av-2001", "userId": "u-1", "productId": "prd-1001", "rating": 6, "comment": "Réduction de bruit excellente.", "createdAt": { "$date": "2025-11-01T10:12:00Z" } },
+  { "_id": "av-2002", "userId": "u-2", "productId": "prd-1001", "rating": 5, "comment": "Confortable mais un peu lourd.", "createdAt": { "$date": "2025-11-02T09:05:00Z" } },
+
+  { "_id": "av-2003", "userId": "u-3", "productId": "prd-1002", "rating": 5, "comment": "Précision top pour FPS.", "createdAt": { "$date": "2025-11-03T13:20:00Z" } },
+  { "_id": "av-2004", "userId": "u-4", "productId": "prd-1002", "rating": 4, "comment": "Bonne prise en main.", "createdAt": { "$date": "2025-11-04T17:40:00Z" } },
+
+  { "_id": "av-2005", "userId": "u-5", "productId": "prd-1003", "rating": 6, "comment": "Touches super réactives.", "createdAt": { "$date": "2025-11-05T08:10:00Z" } },
+  { "_id": "av-2006", "userId": "u-6", "productId": "prd-1003", "rating": 5, "comment": "RGB discret, j’aime.", "createdAt": { "$date": "2025-11-06T11:30:00Z" } },
+
+  { "_id": "av-2007", "userId": "u-7", "productId": "prd-1004", "rating": 3, "comment": "Stock épuisé, dommage…", "createdAt": { "$date": "2025-11-07T14:22:00Z" } },
+
+  { "_id": "av-2008", "userId": "u-8", "productId": "prd-1005", "rating": 5, "comment": "Grosse autonomie.", "createdAt": { "$date": "2025-11-08T19:50:00Z" } },
+  { "_id": "av-2009", "userId": "u-9", "productId": "prd-1005", "rating": 4, "comment": "Bonne puissance pour la taille.", "createdAt": { "$date": "2025-11-09T09:44:00Z" } },
+
+  { "_id": "av-2010", "userId": "u-10", "productId": "prd-1006", "rating": 5, "comment": "Image nette en 2K.", "createdAt": { "$date": "2025-11-09T20:03:00Z" } },
+
+  { "_id": "av-2011", "userId": "u-11", "productId": "prd-1001", "rating": 5, "comment": "Bon rapport qualité/prix.", "createdAt": { "$date": "2025-11-10T08:00:00Z" } },
+  { "_id": "av-2012", "userId": "u-11", "productId": "prd-1002", "rating": 5, "comment": "Bon rapport qualité/prix.", "createdAt": { "$date": "2025-11-10T08:01:00Z" } },
+  { "_id": "av-2013", "userId": "u-11", "productId": "prd-1003", "rating": 5, "comment": "Bon rapport qualité/prix.", "createdAt": { "$date": "2025-11-10T08:02:00Z" } }
+]

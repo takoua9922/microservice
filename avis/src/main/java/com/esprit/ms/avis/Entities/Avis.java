@@ -14,7 +14,7 @@ import java.time.Instant;
 public class Avis {
     @Id private String id;
     @Indexed private String userId;
-    @Indexed private String productId; // << not articleId
+    @Indexed private String productId;
     private Integer rating;
     private String comment;
     @CreatedDate private Instant createdAt;

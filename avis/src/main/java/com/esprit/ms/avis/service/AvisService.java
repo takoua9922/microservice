@@ -4,6 +4,7 @@ package com.esprit.ms.avis.service;
 import com.esprit.ms.avis.Entities.Avis;
 import com.esprit.ms.avis.dto.AvisRequest;
 import com.esprit.ms.avis.external.ProductClient;
+import com.esprit.ms.avis.external.UserClient;
 import com.esprit.ms.avis.mapper.AvisMapper;
 import com.esprit.ms.avis.repository.AvisRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,25 @@ import java.util.List;
 public class AvisService {
     private final AvisRepository repo;
     private final ProductClient productClient;
+    private final UserClient userClient;
 
     @Transactional
     public Avis create(AvisRequest req) {
         if (req.rating() < 1 || req.rating() > 5)
             throw new IllegalArgumentException("rating must be in [1..5]");
 
-        // Feign check
+        // Feign check for user
+        try {
+            Boolean userExists = userClient.userExists(req.userId().toString());
+            if (userExists == null || !userExists)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
+        } catch (feign.FeignException.NotFound e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
+        } catch (feign.FeignException e) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "User service unavailable");
+        }
+
+        // Feign check for product
         try {
             Boolean exists = productClient.productExists(req.productId());
             if (exists == null || !exists)

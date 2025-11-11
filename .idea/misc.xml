@@ -9,6 +9,7 @@
         <option value="$PROJECT_DIR$/DiscoveryServer/DiscoveryServer/pom.xml" />
         <option value="$PROJECT_DIR$/ConfigServer/pom.xml" />
         <option value="$PROJECT_DIR$/seller/pom.xml" />
+        <option value="$PROJECT_DIR$/customer/pom.xml" />
       </list>
     </option>
   </component>
