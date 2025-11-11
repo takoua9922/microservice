@@ -1,0 +1,5 @@
+spring:
+  config:
+    import: optional:configserver:http://localhost:8883
+  application:
+    name: customer-service

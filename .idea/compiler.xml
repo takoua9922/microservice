@@ -20,6 +20,15 @@
         <module name="DiscoveryServer" />
         <module name="ConfigServer" />
       </profile>
+      <profile name="Annotation profile for customer" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="customer" />
+      </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
@@ -27,6 +36,7 @@
       <module name="ConfigServer" options="-parameters" />
       <module name="DiscoveryServer" options="-parameters" />
       <module name="avis" options="-parameters" />
+      <module name="customer" options="-parameters" />
       <module name="getway" options="-parameters" />
     </option>
   </component>
