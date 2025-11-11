@@ -3,6 +3,15 @@ spring:
     name: catalogue-service
   config:
     import: "optional:configserver:"
+  
+  # Security OAuth2 Resource Server Configuration
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/microservices-realm}
+          jwk-set-uri: ${KEYCLOAK_JWK_URI:http://localhost:8080/realms/microservices-realm/protocol/openid-connect/certs}
+  
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:catalogue_db}
     username: ${DB_USERNAME:catalogue_user}
@@ -37,3 +46,8 @@ management:
     web:
       exposure:
         include: health,info,metrics
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: DEBUG
