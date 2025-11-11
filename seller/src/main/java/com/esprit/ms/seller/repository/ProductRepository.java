@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends MongoRepository<Product, String> {
     Page<Product> findBySellerId(String sellerId, Pageable pageable);
     boolean existsBySellerIdAndSku(String sellerId, String sku);
+
 }

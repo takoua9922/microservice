@@ -1,16 +1,6 @@
+// com.esprit.ms.avis.dto.AvisRequest
 package com.esprit.ms.avis.dto;
-
 
 import jakarta.validation.constraints.*;
 
-public record AvisRequest(
-        @NotNull
-        Long userId,
-        @NotNull
-        Long articleId,
-        @Min(1)
-        @Max(5)
-        int rating,
-        @Size(max=1000)
-        String comment
-) {}
+public record AvisRequest(String userId, String productId, int rating, String comment) {}

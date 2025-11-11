@@ -3,6 +3,7 @@ package com.esprit.ms.seller.Controller;
 import com.esprit.ms.seller.Entities.Product;
 import com.esprit.ms.seller.dto.ProductCreateDto;
 import com.esprit.ms.seller.dto.ProductUpdateDto;
+import com.esprit.ms.seller.repository.ProductRepository;
 import com.esprit.ms.seller.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService service;
+    private final ProductRepository repo;
 
     @PostMapping("/{sellerId}")
     public Product create(@PathVariable String sellerId,
@@ -54,4 +56,11 @@ public class ProductController {
     public void deleteMine(@PathVariable String sellerId, @PathVariable String id) {
         service.deleteMine(sellerId, id);
     }
-}
+
+
+    @GetMapping("/{id}/exists")
+    public Boolean exists(@PathVariable String id) {
+        return repo.existsById(id);
+    }
+    }
+

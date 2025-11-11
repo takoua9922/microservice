@@ -116,5 +116,7 @@ public class ProductService {
         if (!"SELLER".equalsIgnoreCase(user.role()))  throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not a seller");
         if (!"ACTIVE".equalsIgnoreCase(user.status())) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Seller is not active");
     }
-
+    public boolean existsById(String id) {
+        return repo.existsById(id);
+    }
 }
