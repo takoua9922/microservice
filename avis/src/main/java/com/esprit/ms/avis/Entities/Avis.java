@@ -1,36 +1,84 @@
 package com.esprit.ms.avis.Entities;
 
-import jakarta.persistence.*;
+
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.time.Instant;
 
-@Entity
-@Table(name="avis")
+@Document(collection = "avis")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Avis {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(nullable = false)
+    @Id
+    private Long id;
+    @Indexed
     private Long userId;
 
-    @Column(nullable = false)
+    @Indexed
     private Long articleId;
 
-    @Column(nullable = false)
-    private Integer rating; // 1..5
+    private Integer rating;
 
-    @Column(length = 1000)
     private String comment;
 
-    @Column(nullable = false, updatable = false)
+    @CreatedDate
     private Instant createdAt;
 
-    @PrePersist
-    void prePersist() { if (createdAt == null) createdAt = Instant.now(); }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getArticleId() {
+        return articleId;
+    }
+
+    public void setArticleId(Long articleId) {
+        this.articleId = articleId;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
 }
 
