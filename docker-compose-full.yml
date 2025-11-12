@@ -1,0 +1,181 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for Keycloak
+  postgres-keycloak:
+    image: postgres:15-alpine
+    container_name: postgres-keycloak
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak_password
+    volumes:
+      - postgres_keycloak_data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Keycloak Server
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.0
+    container_name: keycloak
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak_password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HTTP_ENABLED: true
+      KC_HTTP_PORT: 8080
+      KC_HEALTH_ENABLED: true
+      KC_METRICS_ENABLED: true
+      KC_LOG_LEVEL: INFO
+    command:
+      - start-dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+      - ./keycloak/import:/opt/keycloak/data/import:ro
+    networks:
+      - microservices-network
+    depends_on:
+      postgres-keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080;echo -e 'GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n' >&3;grep 'HTTP/1.1 200 OK' <&3"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # Eureka Discovery Server
+  eureka-server:
+    build:
+      context: ./DiscoveryServer/DiscoveryServer
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - microservices-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # API Gateway
+  gateway:
+    build:
+      context: ./getway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    environment:
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/microservices-realm
+      KEYCLOAK_JWK_URI: http://keycloak:8080/realms/microservices-realm/protocol/openid-connect/certs
+      KEYCLOAK_AUTH_URI: http://keycloak:8080/realms/microservices-realm/protocol/openid-connect/auth
+      KEYCLOAK_TOKEN_URI: http://keycloak:8080/realms/microservices-realm/protocol/openid-connect/token
+      KEYCLOAK_USERINFO_URI: http://keycloak:8080/realms/microservices-realm/protocol/openid-connect/userinfo
+      KEYCLOAK_CLIENT_ID: gateway-client
+      KEYCLOAK_CLIENT_SECRET: ${GATEWAY_CLIENT_SECRET:-change-me}
+    ports:
+      - "8090:8090"
+    networks:
+      - microservices-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+
+  # Auth Service
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    environment:
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      KEYCLOAK_SERVER_URL: http://keycloak:8080
+      KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/microservices-realm
+      KEYCLOAK_JWK_URI: http://keycloak:8080/realms/microservices-realm/protocol/openid-connect/certs
+      KEYCLOAK_REALM: microservices-realm
+      KEYCLOAK_ADMIN_USERNAME: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_ADMIN_CLIENT_ID: admin-cli
+    ports:
+      - "8082:8082"
+    networks:
+      - microservices-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+
+  # Catalogue Service
+  catalogue-service:
+    build:
+      context: ./catalogue-service
+      dockerfile: Dockerfile
+    container_name: catalogue-service
+    environment:
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/microservices-realm
+      KEYCLOAK_JWK_URI: http://keycloak:8080/realms/microservices-realm/protocol/openid-connect/certs
+      DB_HOST: postgres-catalogue
+      DB_PORT: 5432
+      DB_NAME: catalogue_db
+      DB_USERNAME: catalogue_user
+      DB_PASSWORD: catalogue_pass
+    ports:
+      - "8083:8080"
+    networks:
+      - microservices-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+
+  # Avis Service
+  avis-service:
+    build:
+      context: ./avis
+      dockerfile: Dockerfile
+    container_name: avis-service
+    environment:
+      SPRING_PROFILES_ACTIVE: eureka
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
+      KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/microservices-realm
+      KEYCLOAK_JWK_URI: http://keycloak:8080/realms/microservices-realm/protocol/openid-connect/certs
+    ports:
+      - "8081:8081"
+    networks:
+      - microservices-network
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+
+networks:
+  microservices-network:
+    driver: bridge
+
+volumes:
+  postgres_keycloak_data:
+    driver: local
+  keycloak_data:
+    driver: local
