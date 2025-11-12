@@ -1,0 +1,417 @@
+
+	"info": {
+		"_postman_id": "notification-service-tests",
+		"name": "E-Commerce Notification Service - Tests",
+		"description": "Collection complète de tests pour le système de notifications",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Configuration Initiale",
+			"item": [
+				{
+					"name": "Créer utilisateur avec préférences",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": 1,\n  \"email\": \"user1@example.com\",\n  \"wantsPromoNotifications\": true,\n  \"wantsAvailabilityNotifications\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/user-notifications",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "user-notifications"]
+						}
+					}
+				},
+				{
+					"name": "Récupérer préférences par userId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/user-notifications/user/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "user-notifications", "user", "1"]
+						}
+					}
+				},
+				{
+					"name": "Récupérer préférences par email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/user-notifications/email/user1@example.com",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "user-notifications", "email", "user1@example.com"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Authentification",
+			"item": [
+				{
+					"name": "Valider token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"valid-token-12345\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/validate",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "validate"]
+						}
+					}
+				},
+				{
+					"name": "Ajouter un token (dev)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"new-token-123\",\n  \"userId\": 4\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/tokens",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "tokens"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Notifications Personnalisées",
+			"item": [
+				{
+					"name": "Envoyer notification avec token (header)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer valid-token-12345"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"recipientEmail\": \"user1@example.com\",\n  \"subject\": \"Bienvenue sur TuniShop!\",\n  \"message\": \"Merci de vous être inscrit. Profitez de nos offres spéciales!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/send",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", "send"]
+						}
+					}
+				},
+				{
+					"name": "Envoyer notification avec token invalide (doit échouer)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer invalid-token"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"recipientEmail\": \"user1@example.com\",\n  \"subject\": \"Test\",\n  \"message\": \"Test message\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/send",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", "send"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Promotions",
+			"item": [
+				{
+					"name": "Créer une promotion",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Promo Été 2024\",\n  \"discountPercentage\": 25.0,\n  \"startDate\": \"2024-06-01T00:00:00\",\n  \"endDate\": \"2024-08-31T23:59:59\",\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/promotions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "promotions"]
+						}
+					}
+				},
+				{
+					"name": "Récupérer toutes les promotions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/promotions",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "promotions"]
+						}
+					}
+				},
+				{
+					"name": "Récupérer promotions actives",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/promotions/active",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "promotions", "active"]
+						}
+					}
+				},
+				{
+					"name": "Récupérer promotion par ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/promotions/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "promotions", "1"]
+						}
+					}
+				},
+				{
+					"name": "Notifier une promotion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/promotions/1/notify",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", "promotions", "1", "notify"]
+						}
+					}
+				},
+				{
+					"name": "Vérifier promotions actives (automatique)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/promotions/check-active",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", "promotions", "check-active"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Produits",
+			"item": [
+				{
+					"name": "Créer un produit",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"iPhone 15 Pro\",\n  \"price\": 1299.99,\n  \"stockQuantity\": 10,\n  \"isAvailable\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products"]
+						}
+					}
+				},
+				{
+					"name": "Récupérer tous les produits",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/products",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products"]
+						}
+					}
+				},
+				{
+					"name": "Récupérer produits disponibles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/products/available",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products", "available"]
+						}
+					}
+				},
+				{
+					"name": "Récupérer produit par ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/products/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products", "1"]
+						}
+					}
+				},
+				{
+					"name": "Mettre à jour disponibilité produit",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/products/1/availability?isAvailable=false&stockQuantity=0",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "products", "1", "availability"],
+							"query": [
+								{
+									"key": "isAvailable",
+									"value": "false"
+								},
+								{
+									"key": "stockQuantity",
+									"value": "0"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Notifier disponibilité produit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/products/1/availability?email=user1@example.com",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", "products", "1", "availability"],
+							"query": [
+								{
+									"key": "email",
+									"value": "user1@example.com"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Notifier rupture de stock",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/products/1/out-of-stock?email=user1@example.com",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", "products", "1", "out-of-stock"],
+							"query": [
+								{
+									"key": "email",
+									"value": "user1@example.com"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Vérifier disponibilité produits (automatique)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/products/check-availability",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", "products", "check-availability"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Récupération Notifications",
+			"item": [
+				{
+					"name": "Récupérer notifications par userId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/user/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", "user", "1"]
+						}
+					}
+				},
+				{
+					"name": "Récupérer notifications par email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/email/user1@example.com",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "notifications", "email", "user1@example.com"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8085",
+			"type": "string"
+		}
+	]
+}
+

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test WebSocket - Tuni Shop Notifications</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .messages {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .message {
+            padding: 8px;
+            margin: 5px 0;
+            border-left: 3px solid #007bff;
+            background-color: white;
+        }
+        .message.promotion {
+            border-left-color: #28a745;
+        }
+        .message.product {
+            border-left-color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔔 Test WebSocket - Tuni Shop Notifications</h1>
+        
+        <div id="status" class="status disconnected">
+            ❌ Déconnecté
+        </div>
+        
+        <div>
+            <button id="connectBtn" onclick="connect()">Se connecter</button>
+            <button id="disconnectBtn" onclick="disconnect()" disabled>Se déconnecter</button>
+        </div>
+        
+        <div class="messages" id="messages">
+            <p><em>En attente de connexion...</em></p>
+        </div>
+    </div>
+
+    <script>
+        let stompClient = null;
+        const socketUrl = 'http://localhost:8085/ws';
+
+        function connect() {
+            const socket = new SockJS(socketUrl);
+            stompClient = Stomp.over(socket);
+            
+            stompClient.connect({}, function(frame) {
+                console.log('Connected: ' + frame);
+                updateStatus(true);
+                
+                // S'abonner aux notifications générales
+                stompClient.subscribe('/topic/notifications', function(message) {
+                    const notification = JSON.parse(message.body);
+                    addMessage('notification', notification);
+                });
+                
+                // S'abonner aux promotions
+                stompClient.subscribe('/topic/promotions', function(message) {
+                    const promotion = JSON.parse(message.body);
+                    addMessage('promotion', promotion);
+                });
+                
+                // S'abonner aux produits
+                stompClient.subscribe('/topic/products', function(message) {
+                    const product = JSON.parse(message.body);
+                    addMessage('product', product);
+                });
+            }, function(error) {
+                console.error('Connection error: ', error);
+                updateStatus(false);
+            });
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+            updateStatus(false);
+        }
+
+        function updateStatus(connected) {
+            const statusDiv = document.getElementById('status');
+            const connectBtn = document.getElementById('connectBtn');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+            
+            if (connected) {
+                statusDiv.className = 'status connected';
+                statusDiv.textContent = '✅ Connecté';
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+            } else {
+                statusDiv.className = 'status disconnected';
+                statusDiv.textContent = '❌ Déconnecté';
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+            }
+        }
+
+        function addMessage(type, data) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + type;
+            
+            let content = `<strong>${data.type || type.toUpperCase()}</strong><br>`;
+            if (data.subject) content += `Sujet: ${data.subject}<br>`;
+            if (data.message) content += `Message: ${data.message}<br>`;
+            if (data.recipientEmail) content += `Destinataire: ${data.recipientEmail}<br>`;
+            if (data.timestamp) content += `Heure: ${data.timestamp}`;
+            
+            messageDiv.innerHTML = content;
+            messagesDiv.insertBefore(messageDiv, messagesDiv.firstChild);
+        }
+
+        // Connexion automatique au chargement
+        window.onload = function() {
+            // connect(); // Décommentez pour connexion automatique
+        };
+    </script>
+</body>
+</html>
+
